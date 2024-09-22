@@ -1,0 +1,206 @@
+// 字体文件
+@import url('./font.less');
+
+.han_analytics {
+  padding: 56px 0 26px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: max-content;
+
+  &>header {
+    position: fixed;
+    left: 0;
+    top: 0;
+    box-sizing: border-box;
+    width: 100%;
+    height: max-content;
+    border-bottom: solid #e4e4e7 1px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    font-family: 'HarmonyOS Sans SC' !important;
+    z-index: 99999999;
+
+    .main {
+      box-sizing: border-box;
+      padding: 0 16.66px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      max-width: 1666px;
+      height: 56px;
+
+      &>.logo {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        width: max-content;
+        height: 100%;
+        //   文字样式
+        font-size: 18px;
+        font-weight: bolder;
+
+        &>img {
+          height: 26px;
+          border-radius: 6px;
+          width: auto;
+          object-fit: contain;
+        }
+      }
+
+      &>h2 {
+        margin-left: auto;
+      }
+    }
+  }
+
+  &>main {
+    box-sizing: border-box;
+    padding: 16.66px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1666px;
+    height: 100%;
+    overflow: hidden;
+
+    &>header {
+      margin: 16px 0 36px;
+      width: 100%;
+      height: max-content;
+      font-family: 'HarmonyOS Sans SC', sans-serif !important;
+
+      .git-link {
+        font-weight: bold;
+        color: #0969da;
+        transition: all 0.16s;
+
+        &:hover {
+          opacity: 0.88;
+        }
+      }
+    }
+
+    &>section.main {
+      box-sizing: border-box;
+      width: 100%;
+      height: max-content;
+
+      &>.data-view {
+        width: 100%;
+        height: 200px;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .pages-list {
+        width: 100%;
+
+        p.page-item {
+          box-sizing: border-box;
+          padding: 0 6px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          width: 100%;
+          height: 30px;
+          font-size: 14px;
+          transition: all 0.16s;
+
+          &:nth-of-type(1) {
+            &>span {
+              &:nth-last-of-type(1) {
+                color: red;
+                opacity: 0.88;
+              }
+            }
+          }
+
+          &:nth-of-type(2) {
+            &>span {
+
+              &:nth-last-of-type(1) {
+                color: rgb(243, 94, 74);
+                opacity: 0.88;
+              }
+            }
+          }
+
+          &:nth-of-type(3) {
+            &>span {
+
+              &:nth-last-of-type(1) {
+                color: rgb(247, 127, 112);
+                opacity: 0.88;
+              }
+            }
+          }
+
+          &>span {
+            flex: 1;
+            width: 100%;
+
+            &:nth-last-of-type(1) {
+              flex: none;
+              flex-shrink: 0;
+              width: max-content;
+              margin-left: auto;
+            }
+          }
+
+          img {
+            flex-shrink: 0;
+            height: 50%;
+            width: auto;
+            max-width: 21.5px;
+            border: 1px solid rgb(225, 223, 223);
+            object-fit: cover;
+          }
+
+          &:hover {
+            background: #fafafa;
+          }
+        }
+      }
+    }
+  }
+
+  &>footer {
+    box-sizing: border-box;
+    padding: 68px 0 8px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: max-content;
+
+    &>p {
+      margin: 6px 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      height: max-content;
+      overflow: hidden;
+
+      &>a {
+        width: max-content;
+        height: 20px;
+        overflow: hidden;
+
+        &>img {
+          height: 20px;
+          max-height: 20px;
+          width: auto;
+          object-fit: contain;
+        }
+      }
+    }
+  }
+}
