@@ -8,6 +8,13 @@ export async function onRequest({ request, env }) {
     const { browser, os } = parsedUserAgent.getResult();
     // Area
     const area = request.cf ? request.cf.country : '-';
+    // Referrer 
+    let referrerUrl = '';
+    try {
+      referrerUrl = new URL(referrer).host == host ? '' : referrer;
+    } catch (error) {
+      referrerUrl = referrer
+    }
     // 写数据
     website &&
       host &&
@@ -16,7 +23,7 @@ export async function onRequest({ request, env }) {
           website, //website - blob1
           host, //Host - blob2
           path, //path - blob3
-          new URL(referrer).host == host ? '' : referrer, //referrer - blob4
+          referrerUrl, //referrer - blob4
           os.name || 'Windows', //osName - blob5
           browser.name == 'Chrome WebView' ? 'Chrome' : browser.name || 'Chrome', //browserName - blob6
           area, //areaCode - blob7
@@ -24,8 +31,8 @@ export async function onRequest({ request, env }) {
         ],
         doubles: [visitor ? 1 : 0, visit ? 1 : 0]
       });  // Response
-    return Response.json({ success: true, message: 'Hello Han Analytics' }, { headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } });
   } catch (error) {
-    return Response.json({ success: false, message: 'Han Analytics Send Error' }, { headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } });
+    return Response.json({ success: false, error, message: 'Han Analytics Send Error' }, { headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } });
   }
+  return Response.json({ success: true, message: 'Hello Han Analytics' }, { headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } });
 }
