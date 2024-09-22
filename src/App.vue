@@ -241,17 +241,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 
 
 // 站点列表
-const siteList = ref<Array<string>>([])
-const siteValue = ref<string>('')
+const siteList = ref<Array<string>>(['Hello-HanAnalytics', 'Hello-HanHexoBlog', 'Hello-Han-Api'])
+const siteValue = ref<string>('Hello-HanAnalytics')
 const timeList = [{ name: 'Today', value: 'today' }, { name: 'Last 24 hours', value: '1d' }, { name: 'Last 7 days', value: '7d' }, { name: 'Last 30 days', value: '30d' }, { name: 'Last 90 days', value: '90d' }]
 const timeValue = ref<string>('today')
-const getSiteList = async () => {
-  const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'list' }) })
-  const { data } = await res.json()
-  siteList.value = data;
-  siteValue.value = data[0]
-  if (data[0]) getDatas()
-}
 
 // 站点切换事件
 const siteChangeFn = () => getDatas()
@@ -357,7 +350,7 @@ onMounted(() => {
   canvasMain.value = markRaw(echarts.init(echartsDOM.value, null, { renderer: "svg", useDirtyRect: true }));
   window.addEventListener("resize", canvasMain.value.resize);
   // 站点列表
-  getSiteList()
+  getDatas()
 })
 </script>
 
