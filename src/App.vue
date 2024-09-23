@@ -249,8 +249,8 @@ const getSiteList = async () => {
   const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'list' }) })
   const { data } = await res.json()
   siteList.value = data;
-  siteValue.value = data[0]
-  if (data[0]) getDatas()
+  siteValue.value = siteList.value[0]
+  if (siteValue.value) getDatas()
 }
 
 // 站点切换事件
