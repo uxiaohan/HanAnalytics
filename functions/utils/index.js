@@ -5,39 +5,55 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 // SqlTIme格式化
-export const formatTime = (timeStr) => {
+export const formatTime = (timeStr, tz) => {
+  const defaultTz = new Intl.DateTimeFormat([], { timeZone: undefined }).resolvedOptions().timeZone || 'UTC';
+  const startDay = dayjs()
+    .tz(tz)
+    .subtract(Number(timeStr.replace('d', '')), 'day')
+    .startOf('day')
+    .tz(defaultTz)
+    .format('YYYY-MM-DD HH:mm:ss');
+  const endDay = dayjs()
+    .tz(tz)
+    .add(timeStr == '1d' ? 0 : 1, 'day')
+    .startOf('day')
+    .tz(defaultTz)
+    .format('YYYY-MM-DD HH:mm:ss');
   let sqlTime = '';
   switch (timeStr) {
     case '1d':
     case '7d':
     case '30d':
     case '90d':
-      sqlTime = `NOW() - INTERVAL '${timeStr.replace('d', '')}' DAY`;
+      sqlTime = `toDateTime('${startDay}') AND timestamp < toDateTime('${endDay}')`;
       break;
     default:
-      sqlTime = `toDateTime('${dayjs().startOf('day').format('YYYY-MM-DD HH:mm:ss')}')`;
+      sqlTime = `NOW() - INTERVAL '${dayjs().tz(tz).hour()}' HOUR`;
   }
   return sqlTime;
 };
 
 // 次数统计
 export const countData = (arr, key, keyType, status = true) => {
+  // 处理JS中对象无序排列问题
+  const _StringKey = status ? '' : `-_-www.vvhan.com-_-`;
   let res = arr.reduce((_arr, v) => {
-    _arr[v[key]] ? (_arr[v[key]] += 1) : (_arr[v[key]] = 1);
+    _arr[`${v[key]}${_StringKey}`] ? (_arr[`${v[key]}${_StringKey}`] += 1) : (_arr[`${v[key]}${_StringKey}`] = 1);
     return _arr;
   }, {});
+
   // 数据处理
   const timeArr = {};
   switch (keyType.key) {
     case 'today':
       Array.from({ length: keyType.now.hour() }).forEach((i, idx) => {
-        timeArr[String(idx).padStart(2, '0')] = 0;
+        timeArr[`${String(idx).padStart(2, '0')}${_StringKey}`] = 0;
       });
       break;
 
     case '1d':
       Array.from({ length: 24 }).forEach((i, idx) => {
-        timeArr[String(idx).padStart(2, '0')] = 0;
+        timeArr[`${String(idx).padStart(2, '0')}${_StringKey}`] = 0;
       });
       break;
 
@@ -46,10 +62,10 @@ export const countData = (arr, key, keyType, status = true) => {
     case '90d':
       Array.from({ length: Number(String(keyType.key).replace('d', '')) }).forEach((i, idx) => {
         timeArr[
-          keyType.now
+          `${keyType.now
             .subtract(Number(String(keyType.key).replace('d', '')), 'day')
             .add(idx, 'day')
-            .format('MM.DD')
+            .format('MM.DD')}${_StringKey}`
         ] = 0;
       });
       break;
@@ -59,7 +75,7 @@ export const countData = (arr, key, keyType, status = true) => {
   }
   res = { ...timeArr, ...res };
   return Object.entries(res)
-    .map(([name, value]) => ({ name, value }))
+    .map(([name, value]) => ({ name: name.replace(_StringKey, ''), value }))
     .sort((a, b) => (status ? b.value - a.value : Number(a.name) - Number(b.name)));
 };
 
