@@ -5,6 +5,3 @@ compatibility_date = "2024-09-21"
 [[analytics_engine_datasets]]
 binding = "AnalyticsBinding"
 dataset = "AnalyticsDataset"
-[vars]
-CLOUDFLARE_ACCOUNT_ID = '你的 Cloudflare Workers ID'
-CLOUDFLARE_API_TOKEN = '你的 Cloudflare API token'
