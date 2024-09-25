@@ -33,5 +33,5 @@ export const vh_INIT = async (env, time, siteID, tz, type = null) => {
   resObj.area.forEach((i) => (i.code = AREAS[i.name]));
   // echarts数据处理
   const echarts_data = echartsData(data, time, tz);
-  return { visitor, visit, views, ...resObj, echarts_data };
+  return { visitor: visitor >= 1000 ? `${(visitor / 1000).toFixed(1)}K` : visitor, visit: visit >= 1000 ? `${(visit / 1000).toFixed(1)}K` : visit, views: views >= 1000 ? `${(views / 1000).toFixed(1)}K` : views, ...resObj, echarts_data };
 };

@@ -1,5 +1,5 @@
 // 字体文件
-@import url('./font.less');
+@import url("./font.less");
 
 .han_analytics {
   padding: 56px 0 26px;
@@ -10,7 +10,7 @@
   width: 100%;
   height: max-content;
 
-  &>header {
+  & > header {
     position: fixed;
     left: 0;
     top: 0;
@@ -20,7 +20,7 @@
     border-bottom: solid #e4e4e7 1px;
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(16px);
-    font-family: 'HarmonyOS Sans SC' !important;
+    font-family: "HarmonyOS Sans SC" !important;
     z-index: 99999999;
 
     .main {
@@ -33,7 +33,7 @@
       max-width: 1666px;
       height: 56px;
 
-      &>.logo {
+      & > .logo {
         display: flex;
         align-items: center;
         gap: 16px;
@@ -43,7 +43,7 @@
         font-size: 18px;
         font-weight: bolder;
 
-        &>img {
+        & > img {
           height: 26px;
           border-radius: 6px;
           width: auto;
@@ -51,13 +51,13 @@
         }
       }
 
-      &>h2 {
+      & > h2 {
         margin-left: auto;
       }
     }
   }
 
-  &>main {
+  & > main {
     box-sizing: border-box;
     padding: 16.66px;
     display: flex;
@@ -67,11 +67,11 @@
     height: 100%;
     overflow: hidden;
 
-    &>header {
+    & > header {
       margin: 16px 0 36px;
       width: 100%;
       height: max-content;
-      font-family: 'HarmonyOS Sans SC', sans-serif !important;
+      font-family: "HarmonyOS Sans SC", sans-serif !important;
 
       .git-link {
         font-weight: bold;
@@ -84,12 +84,12 @@
       }
     }
 
-    &>section.main {
+    & > section.main {
       box-sizing: border-box;
       width: 100%;
       height: max-content;
 
-      &>.data-view {
+      & > .data-view {
         width: 100%;
         height: 200px;
       }
@@ -102,6 +102,7 @@
         width: 100%;
 
         p.page-item {
+          position: relative;
           box-sizing: border-box;
           padding: 0 6px;
           display: flex;
@@ -111,9 +112,35 @@
           height: 30px;
           font-size: 14px;
           transition: all 0.16s;
+          z-index: 1;
+
+          & > em {
+            position: relative;
+            box-sizing: border-box;
+            padding-left: 4px;
+            flex-shrink: 0;
+            width: 30px;
+            height: calc(100% - 6px);
+            border-left: 1px solid #d2defb;
+            font-style: normal;
+            font-size: 14px;
+            color: #8e8e8e;
+            z-index: 1;
+
+            & > i {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 0;
+              height: 100%;
+              background: #eaeffe;
+              opacity: 0.66;
+              z-index: -1;
+            }
+          }
 
           &:nth-of-type(1) {
-            &>span {
+            & > span {
               &:nth-last-of-type(1) {
                 color: red;
                 opacity: 0.88;
@@ -122,8 +149,7 @@
           }
 
           &:nth-of-type(2) {
-            &>span {
-
+            & > span {
               &:nth-last-of-type(1) {
                 color: rgb(243, 94, 74);
                 opacity: 0.88;
@@ -132,8 +158,7 @@
           }
 
           &:nth-of-type(3) {
-            &>span {
-
+            & > span {
               &:nth-last-of-type(1) {
                 color: rgb(247, 127, 112);
                 opacity: 0.88;
@@ -141,7 +166,7 @@
             }
           }
 
-          &>span {
+          & > span {
             flex: 1;
             width: 100%;
 
@@ -163,14 +188,14 @@
           }
 
           &:hover {
-            background: #fafafa;
+            background: #f5f6fc;
           }
         }
       }
     }
   }
 
-  &>footer {
+  & > footer {
     box-sizing: border-box;
     padding: 68px 0 8px;
     display: flex;
@@ -178,7 +203,7 @@
     width: 100%;
     height: max-content;
 
-    &>p {
+    & > p {
       margin: 6px 0;
       display: flex;
       flex-wrap: wrap;
@@ -189,12 +214,12 @@
       height: max-content;
       overflow: hidden;
 
-      &>a {
+      & > a {
         width: max-content;
         height: 20px;
         overflow: hidden;
 
-        &>img {
+        & > img {
           height: 20px;
           max-height: 20px;
           width: auto;

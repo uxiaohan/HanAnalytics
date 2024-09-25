@@ -74,8 +74,9 @@ export const countData = (arr, key, keyType, status = true) => {
       break;
   }
   res = { ...timeArr, ...res };
+  const totalCount = Object.values(res).reduce((acc, cur) => acc + cur, 0);
   return Object.entries(res)
-    .map(([name, value]) => ({ name: name.replace(_StringKey, ""), value }))
+    .map(([name, value]) => ({ name: name.replace(_StringKey, ""), value: key == "t_str" ? value : value >= 1000 ? `${(value / 1000).toFixed(1)}K` : value, per: `${Math.ceil((value / totalCount) * 100)}%` }))
     .sort((a, b) => (status ? b.value - a.value : Number(a.name) - Number(b.name)));
 };
 
@@ -90,7 +91,7 @@ export const echartsData = (data, key, tz) => {
   switch (key) {
     case "today":
     case "1d":
-      timeArr = data.map(i => {
+      timeArr = data.map((i) => {
         i.t_str = dayjs.utc(i.timestamp).tz(tz).format("HH");
         return i;
       });
@@ -98,13 +99,13 @@ export const echartsData = (data, key, tz) => {
     case "7d":
     case "30d":
     case "90d":
-      timeArr = data.map(i => {
+      timeArr = data.map((i) => {
         i.t_str = dayjs.utc(i.timestamp).tz(tz).format("MM.DD");
         return i;
       });
       break;
     default:
-      timeArr = data.map(i => {
+      timeArr = data.map((i) => {
         i.t_str = dayjs.utc(i.timestamp).tz(tz).format("HH");
         return i;
       });

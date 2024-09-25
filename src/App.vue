@@ -95,6 +95,7 @@
                 <p class="page-item" v-for="(i, idx) in resData.path" :key="idx">
                   <span class="line-clamp-1">{{ i.name }}</span>
                   <span class="line-clamp-1">{{ i.value }}</span>
+                  <em>{{ i.per }}<i :style="{ width: i.per }"></i></em>
                 </p>
               </ScrollArea>
               <div class="space-y-4 pt-8 w-full" v-else>
@@ -122,6 +123,7 @@
                     {{ i.name || '(None)' }}
                   </a>
                   <span class="line-clamp-1">{{ i.value }}</span>
+                  <em>{{ i.per }}<i :style="{ width: i.per }"></i></em>
                 </p>
               </ScrollArea>
               <div class="space-y-4 pt-8 w-full" v-else>
@@ -148,6 +150,7 @@
                 <p class="page-item" v-for="(i, idx) in resData.soft" :key="idx">
                   <span class="line-clamp-1">{{ i.name }}</span>
                   <span class="line-clamp-1">{{ i.value }}</span>
+                  <em>{{ i.per }}<i :style="{ width: i.per }"></i></em>
                 </p>
               </ScrollArea>
               <div class="space-y-4 pt-8 w-full" v-else>
@@ -172,6 +175,7 @@
                 <p class="page-item" v-for="(i, idx) in resData.os" :key="idx">
                   <span class="line-clamp-1">{{ i.name }}</span>
                   <span class="line-clamp-1">{{ i.value }}</span>
+                  <em>{{ i.per }}<i :style="{ width: i.per }"></i></em>
                 </p>
               </ScrollArea>
               <div class="space-y-4 pt-8 w-full" v-else>
@@ -198,6 +202,7 @@
                   <img :src="getAreaIcon(i.name)">
                   <span class="line-clamp-1">{{ i.code }}</span>
                   <span class="line-clamp-1">{{ i.value }}</span>
+                  <em>{{ i.per }}<i :style="{ width: i.per }"></i></em>
                 </p>
               </ScrollArea>
               <div class="space-y-4 pt-8 w-full" v-else>
@@ -288,7 +293,7 @@ const loginFn = async () => {
 // 站点列表
 const siteList = ref<Array<string>>([])
 const siteValue = ref<string>('')
-const timeList = [{ name: 'Today', value: 'today' }, { name: 'Last 24 hours', value: '1d' }, { name: 'Last 7 days', value: '7d' }, { name: 'Last 30 days', value: '30d' }, { name: 'Last 90 days', value: '90d' }]
+const timeList = [{ name: 'Today', value: 'today' }, { name: 'Yesterday', value: '1d' }, { name: 'Last 7 days', value: '7d' }, { name: 'Last 30 days', value: '30d' }, { name: 'Last 90 days', value: '90d' }]
 const timeValue = ref<string>('today')
 const getSiteList = async () => {
   const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'list', session: session.value }) })
