@@ -173,6 +173,7 @@
             <CardContent class="box-border pt-0 w-full h-full overflow-hidden">
               <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.os">
                 <p class="page-item" v-for="(i, idx) in resData.os" :key="idx">
+                  <img class="os" :src="getIcon(i.name)">
                   <span class="line-clamp-1">{{ i.name }}</span>
                   <span class="line-clamp-1">{{ i.value }}</span>
                   <em>{{ i.per }}<i :style="{ width: i.per }"></i></em>
@@ -199,7 +200,7 @@
             <CardContent class="box-border pt-0 w-full h-full overflow-hidden">
               <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.area">
                 <p class="page-item" v-for="(i, idx) in resData.area" :key="idx">
-                  <img :src="getAreaIcon(i.name)">
+                  <img :src="getIcon(i.name)">
                   <span class="line-clamp-1">{{ i.code }}</span>
                   <span class="line-clamp-1">{{ i.value }}</span>
                   <em>{{ i.per }}<i :style="{ width: i.per }"></i></em>
@@ -278,7 +279,7 @@ const loginPassword = ref<string>('')
 const loginFn = async () => {
   if (!loginPassword.value) return toast({ description: '请输入密码', variant: 'destructive' });
   loginStatus.value = true;
-  const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'Login', session: loginPassword.value }) })
+  const res = await fetch('https://analytics.vvhan.com/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'Login', session: loginPassword.value }) })
   await new Promise(resolve => setTimeout(resolve, 666))
   loginStatus.value = false;
   const data = await res.json()
@@ -296,7 +297,7 @@ const siteValue = ref<string>('')
 const timeList = [{ name: 'Today', value: 'today' }, { name: 'Yesterday', value: '1d' }, { name: 'Last 7 days', value: '7d' }, { name: 'Last 30 days', value: '30d' }, { name: 'Last 90 days', value: '90d' }]
 const timeValue = ref<string>('today')
 const getSiteList = async () => {
-  const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'list', session: session.value }) })
+  const res = await fetch('https://analytics.vvhan.com/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'list', session: session.value }) })
   const data = await res.json()
   if (data.code && data.code === 401) {
     localStorage.clear()
@@ -319,7 +320,7 @@ const getDatas = async () => {
   resData.value = {}
   // 获取数据
   getDatasStatus.value = true
-  const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ siteID: siteValue.value, time: timeValue.value, session: session.value }), })
+  const res = await fetch('https://analytics.vvhan.com/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ siteID: siteValue.value, time: timeValue.value, session: session.value }), })
   const data = await res.json()
   if (data.code && data.code === 401) {
     localStorage.clear()
@@ -339,7 +340,7 @@ const getIconUrl = (url: string) => {
 }
 
 // 获取Area ICON
-const getAreaIcon = (code: string) => `${location.origin}/icon/${code}.png`
+const getIcon = (code: string) => `${location.origin}/icon/${code}.png`
 
 // 渲染图表
 const echartsDOM = ref<HTMLCanvasElement>();
