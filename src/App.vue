@@ -3,7 +3,7 @@
     <header>
       <div class="main">
         <div class="logo">
-          <img src="../public/favicon.ico">
+          <img src="./assets/favicon.ico">
           <span>Han Analytics</span>
         </div>
         <h2>简单优雅的Web分析</h2>
@@ -227,18 +227,63 @@
       </p>
     </footer>
   </section>
+  <div class="z-[999999999]">
+    <Toaster />
+  </div>
+  <AlertDialog :open="authStatus">
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>请输入登录密码</AlertDialogTitle>
+        <AlertDialogDescription>
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <Input type="text" placeholder="Password" v-model="loginPassword" />
+      <AlertDialogFooter>
+        <Button :disabled="loginStatus" @click="loginFn">
+          <Loader2 v-show="loginStatus" class="w-4 h-4 mr-2 animate-spin" />登录
+        </Button>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>
 
 
 <script setup lang="ts">
 import { ref, markRaw, onMounted } from 'vue'
 import * as echarts from "echarts";
+import { Button } from '@/components/ui/button'
+import { Loader2 } from 'lucide-vue-next'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Toaster } from '@/components/ui/toast'
+import { useToast } from '@/components/ui/toast/use-toast'
+const { toast } = useToast();
+// 弹窗
+import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, } from '@/components/ui/alert-dialog'
+import { Input } from '@/components/ui/input'
 
+// 登录
+const authStatus = ref<boolean>(false)
+const session = ref<string>(localStorage.getItem('session') || '')
+const loginStatus = ref<boolean>(false)
+const loginPassword = ref<string>('')
+const loginFn = async () => {
+  if (!loginPassword.value) return toast({ description: '请输入密码', variant: 'destructive' });
+  loginStatus.value = true;
+  const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'Login', session: loginPassword.value }) })
+  await new Promise(resolve => setTimeout(resolve, 666))
+  loginStatus.value = false;
+  const data = await res.json()
+  if (!data.success) return toast({ description: data.message, variant: 'destructive' });
+  localStorage.setItem('session', loginPassword.value)
+  session.value = loginPassword.value
+  authStatus.value = false;
+  // 站点列表
+  getSiteList()
+}
 
 // 站点列表
 const siteList = ref<Array<string>>([])
@@ -246,9 +291,14 @@ const siteValue = ref<string>('')
 const timeList = [{ name: 'Today', value: 'today' }, { name: 'Last 24 hours', value: '1d' }, { name: 'Last 7 days', value: '7d' }, { name: 'Last 30 days', value: '30d' }, { name: 'Last 90 days', value: '90d' }]
 const timeValue = ref<string>('today')
 const getSiteList = async () => {
-  const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'list' }) })
-  const { data } = await res.json()
-  siteList.value = data;
+  const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'list', session: session.value }) })
+  const data = await res.json()
+  if (data.code && data.code === 401) {
+    localStorage.clear()
+    authStatus.value = true
+  }
+  if (!data.success) return toast({ description: data.message, variant: 'destructive' });
+  siteList.value = data.data;
   siteValue.value = siteList.value[0]
   if (siteValue.value) getDatas()
 }
@@ -264,11 +314,16 @@ const getDatas = async () => {
   resData.value = {}
   // 获取数据
   getDatasStatus.value = true
-  const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ siteID: siteValue.value, time: timeValue.value }), })
+  const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ siteID: siteValue.value, time: timeValue.value, session: session.value }), })
+  const data = await res.json()
+  if (data.code && data.code === 401) {
+    localStorage.clear()
+    authStatus.value = true
+  }
+  if (!data.success) return toast({ description: data.message, variant: 'destructive' });
   getDatasStatus.value = false
-  const { data } = await res.json()
-  resData.value = data
-  renderEcharts(data.echarts_data.map((i: any) => `${i.name}${['today', '1d'].includes(timeValue.value) ? '点' : '日'}`), data.echarts_data.map((i: any) => `${i.value}`))
+  resData.value = data.data
+  renderEcharts(resData.value.echarts_data.map((i: any) => `${i.name}${['today', '1d'].includes(timeValue.value) ? '点' : '日'}`), resData.value.echarts_data.map((i: any) => `${i.value}`))
 }
 
 // 获取ICON
@@ -360,7 +415,12 @@ onMounted(() => {
   getSiteList()
 })
 </script>
-
+<style>
+.fixed.inset-0.z-50,
+.fixed.grid.w-full.max-w-lg.shadow-lg.duration-200 {
+  z-index: 99999999;
+}
+</style>
 
 <style scoped>
 @import '@/assets/index.less';

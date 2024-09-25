@@ -1,17 +1,17 @@
-((window) => {
+(window => {
   const { location, document, navigator } = window;
-  const { host, pathname } = location;
+  const { hostname: host, pathname } = location;
   const { currentScript, referrer } = document;
-  const currentRef = referrer !== host ? referrer : '';
-  if (!currentScript || navigator.userAgent.indexOf('Electron') > 0) return;
+  const currentRef = !referrer.includes(host) ? referrer : "";
+  if (!currentScript || navigator.userAgent.indexOf("Electron") > 0) return;
   const attr = currentScript.getAttribute.bind(currentScript);
-  const website = attr('data-website-id');
-  const sendURL = new URL(currentScript.src).origin + '/send';
+  const website = attr("data-website-id");
+  const sendURL = new URL(currentScript.src).origin + "/send";
   let visitor = true;
   let visit = true;
   // 访问间隔 (分钟)
   const AccessInterval = 30;
-  const vhLastVisitT = Number(localStorage.getItem('_vhLastVisitT')) || 0;
+  const vhLastVisitT = Number(localStorage.getItem("_vhLastVisitT")) || 0;
   // 是否是今天缓存
   const nowVisitDate = new Date();
   const vhLastVisitDate = new Date(vhLastVisitT);
@@ -24,12 +24,12 @@
     visit = false;
   } else {
     // 否则更新缓存时间
-    localStorage.setItem('_vhLastVisitT', Date.now());
+    localStorage.setItem("_vhLastVisitT", Date.now());
   }
 
   // URL转码
-  const encode = (str) => {
-    if (!str) return '';
+  const encode = str => {
+    if (!str) return "";
     try {
       if (decodeURI(str) !== str) return decodeURI(str);
     } catch (e) {
@@ -43,7 +43,7 @@
     if (!website) return;
     try {
       await fetch(sendURL, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
           website,
           host,
@@ -53,7 +53,7 @@
           visit
         }),
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         }
       });
     } catch (e) {
