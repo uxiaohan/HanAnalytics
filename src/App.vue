@@ -58,7 +58,7 @@
             class="flex justify-end text-center md:text-right line-clamp-1 [&>.views-item]:flex [&>.views-item]:flex-col [&>.views-item]:items-center md:[&>.views-item]:items-end [&>.views-item]:gap-4 [&>.views-item>span]:text-sm [&>.views-item>p]:text-3xl [&>.views-item>p]:line-clamp-1 [&>.views-item>p]:w-full">
             <div class="views-item w-full overflow-hidden">
               <span>Views</span>
-              <div class="space-y-2 w-[50%]" v-if="!resData.views">
+              <div class="space-y-2 w-[50%]" v-if="resData.views === undefined">
                 <Skeleton class="h-4  w-[50%] ml-auto" />
                 <Skeleton class="h-4" />
               </div>
@@ -66,7 +66,7 @@
             </div>
             <div class="views-item w-full overflow-hidden">
               <span>Visitors</span>
-              <div class="space-y-2 w-[50%]" v-if="!resData.visitor">
+              <div class="space-y-2 w-[50%]" v-if="resData.visitor === undefined">
                 <Skeleton class="h-4  w-[50%] ml-auto" />
                 <Skeleton class="h-4" />
               </div>
@@ -74,7 +74,7 @@
             </div>
             <div class="views-item w-full overflow-hidden">
               <span>Visits</span>
-              <div class="space-y-2 w-[50%]" v-if="!resData.visit">
+              <div class="space-y-2 w-[50%]" v-if="resData.visit === undefined">
                 <Skeleton class="h-4  w-[50%] ml-auto" />
                 <Skeleton class="h-4" />
               </div>
@@ -91,7 +91,7 @@
               <CardTitle>Pages</CardTitle>
             </CardHeader>
             <CardContent class="box-border pt-0 w-full h-full overflow-hidden">
-              <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.path">
+              <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.path != undefined">
                 <p class="page-item" v-for="(i, idx) in resData.path" :key="idx">
                   <span class="line-clamp-1">{{ i.name }}</span>
                   <span class="line-clamp-1">{{ i.value }}</span>
@@ -116,7 +116,7 @@
               <CardTitle>Referrers</CardTitle>
             </CardHeader>
             <CardContent class="box-border pt-0 w-full h-full overflow-hidden">
-              <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.referrer">
+              <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.referrer != undefined">
                 <p class="page-item" v-for="(i, idx) in resData.referrer" :key="idx">
                   <img v-if="i.name" :src="getIconUrl(i.name)">
                   <a :href="i.name" target="_blank" rel="noopener noreferrer" class="line-clamp-1 cursor-pointer">
@@ -146,7 +146,7 @@
               <CardTitle>Browsers</CardTitle>
             </CardHeader>
             <CardContent class="box-border pt-0 w-full h-full overflow-hidden">
-              <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.soft">
+              <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.soft != undefined">
                 <p class="page-item" v-for="(i, idx) in resData.soft" :key="idx">
                   <span class="line-clamp-1">{{ i.name }}</span>
                   <span class="line-clamp-1">{{ i.value }}</span>
@@ -171,7 +171,7 @@
               <CardTitle>OS</CardTitle>
             </CardHeader>
             <CardContent class="box-border pt-0 w-full h-full overflow-hidden">
-              <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.os">
+              <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.os != undefined">
                 <p class="page-item" v-for="(i, idx) in resData.os" :key="idx">
                   <img class="os" :src="getIcon(i.name)">
                   <span class="line-clamp-1">{{ i.name }}</span>
@@ -198,7 +198,7 @@
               <CardTitle>Areas</CardTitle>
             </CardHeader>
             <CardContent class="box-border pt-0 w-full h-full overflow-hidden">
-              <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.area">
+              <ScrollArea class="box-border p-2 pt-0 h-full w-full pages-list" v-if="resData.area != undefined">
                 <p class="page-item" v-for="(i, idx) in resData.area" :key="idx">
                   <img :src="getIcon(i.name)">
                   <span class="line-clamp-1">{{ i.code }}</span>
@@ -279,7 +279,7 @@ const loginPassword = ref<string>('')
 const loginFn = async () => {
   if (!loginPassword.value) return toast({ description: '请输入密码', variant: 'destructive' });
   loginStatus.value = true;
-  const res = await fetch('https://analytics.vvhan.com/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'Login', session: loginPassword.value }) })
+  const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'Login', session: loginPassword.value }) })
   await new Promise(resolve => setTimeout(resolve, 666))
   loginStatus.value = false;
   const data = await res.json()
@@ -297,7 +297,7 @@ const siteValue = ref<string>('')
 const timeList = [{ name: 'Today', value: 'today' }, { name: 'Yesterday', value: '1d' }, { name: 'Last 7 days', value: '7d' }, { name: 'Last 30 days', value: '30d' }, { name: 'Last 90 days', value: '90d' }]
 const timeValue = ref<string>('today')
 const getSiteList = async () => {
-  const res = await fetch('https://analytics.vvhan.com/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'list', session: session.value }) })
+  const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'list', session: session.value }) })
   const data = await res.json()
   if (data.code && data.code === 401) {
     localStorage.clear()
@@ -320,7 +320,7 @@ const getDatas = async () => {
   resData.value = {}
   // 获取数据
   getDatasStatus.value = true
-  const res = await fetch('https://analytics.vvhan.com/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ siteID: siteValue.value, time: timeValue.value, session: session.value }), })
+  const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ siteID: siteValue.value, time: timeValue.value, session: session.value }), })
   const data = await res.json()
   if (data.code && data.code === 401) {
     localStorage.clear()
