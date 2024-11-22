@@ -13,10 +13,13 @@ export async function onRequest({ request, env }) {
     }
     // 是否配置Cloudflare信息
     if (!env.CLOUDFLARE_ACCOUNT_ID || !env.CLOUDFLARE_API_TOKEN) return Response.json({ success: false, message: "请设置 CLOUDFLARE_ACCOUNT_ID 和 CLOUDFLARE_API_TOKEN" }, { headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "*", "Access-Control-Allow-Headers": "*" } });
+    // 参数校验
+    const typeARR = ["visit", "list", "path", "referrer", "os", "soft", "area", "echarts"];
+    if (!typeARR.includes(type)) return Response.json({ success: false, message: "参数错误" }, { headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "*", "Access-Control-Allow-Headers": "*" } });
     // 时区
     const tz = request.cf.timezone || "Asia/Shanghai";
     // 周期校验
-    const timeArr = ["today", "1d", "7d", "30d", "90d"];
+    const timeArr = ["today", "1d", "7d", "30d", "60d", "90d"];
     if (!timeArr.includes(time)) time = "today";
     const data = await vh_INIT(env, time, siteID, tz, type);
     return Response.json({ success: true, data }, { headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "*", "Access-Control-Allow-Headers": "*" } });

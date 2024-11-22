@@ -27,7 +27,7 @@
           <div class="flex gap-[16px] pb-6">
             <div class="w-3/6">
               <Select :disabled="siteList.length < 1 || getDatasStatus" v-model="siteValue"
-                @update:model-value="siteChangeFn">
+                @update:model-value="getDatas">
                 <SelectTrigger class="w-[218px]">
                   <SelectValue placeholder="选择站点" />
                 </SelectTrigger>
@@ -41,7 +41,7 @@
             </div>
             <div class="w-3/6">
               <Select :disabled="siteList.length < 1 || getDatasStatus" v-model="timeValue"
-                @update:model-value="siteChangeFn">
+                @update:model-value="getDatas">
                 <SelectTrigger class="w-[218px]">
                   <SelectValue placeholder="选择周期" />
                 </SelectTrigger>
@@ -58,27 +58,27 @@
             class="flex justify-end text-center md:text-right line-clamp-1 [&>.views-item]:flex [&>.views-item]:flex-col [&>.views-item]:items-center md:[&>.views-item]:items-end [&>.views-item]:gap-4 [&>.views-item>span]:text-sm [&>.views-item>p]:text-3xl [&>.views-item>p]:line-clamp-1 [&>.views-item>p]:w-full">
             <div class="views-item w-full overflow-hidden">
               <span>Views</span>
-              <div class="space-y-2 w-[50%]" v-if="resData.views === undefined">
+              <div class="space-y-2 w-[50%]" v-if="resData.visit.views === undefined">
                 <Skeleton class="h-4  w-[50%] ml-auto" />
                 <Skeleton class="h-4" />
               </div>
-              <p v-else>{{ resData.views }}</p>
+              <p v-else>{{ resData.visit.views }}</p>
             </div>
             <div class="views-item w-full overflow-hidden">
               <span>Visitors</span>
-              <div class="space-y-2 w-[50%]" v-if="resData.visitor === undefined">
+              <div class="space-y-2 w-[50%]" v-if="resData.visit.visitor === undefined">
                 <Skeleton class="h-4  w-[50%] ml-auto" />
                 <Skeleton class="h-4" />
               </div>
-              <p v-else>{{ resData.visitor }}</p>
+              <p v-else>{{ resData.visit.visitor }}</p>
             </div>
             <div class="views-item w-full overflow-hidden">
               <span>Visits</span>
-              <div class="space-y-2 w-[50%]" v-if="resData.visit === undefined">
+              <div class="space-y-2 w-[50%]" v-if="resData.visit.visit === undefined">
                 <Skeleton class="h-4  w-[50%] ml-auto" />
                 <Skeleton class="h-4" />
               </div>
-              <p v-else>{{ resData.visit }}</p>
+              <p v-else>{{ resData.visit.visit }}</p>
             </div>
           </div>
         </div>
@@ -264,6 +264,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import vh from 'vh-plugin'
 import { Toaster } from '@/components/ui/toast'
 import { useToast } from '@/components/ui/toast/use-toast'
 const { toast } = useToast();
@@ -294,42 +295,69 @@ const loginFn = async () => {
 // 站点列表
 const siteList = ref<Array<string>>([])
 const siteValue = ref<string>('')
-const timeList = [{ name: 'Today', value: 'today' }, { name: 'Yesterday', value: '1d' }, { name: 'Last 7 days', value: '7d' }, { name: 'Last 30 days', value: '30d' }, { name: 'Last 90 days', value: '90d' }]
+const timeList = [{ name: 'Today', value: 'today' }, { name: 'Yesterday', value: '1d' }, { name: 'Last 7 days', value: '7d' }, { name: 'Last 30 days', value: '30d' }, { name: 'Last 60 days', value: '60d' }, { name: 'Last 90 days', value: '90d' }]
 const timeValue = ref<string>('today')
 const getSiteList = async () => {
-  const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'list', session: session.value }) })
-  const data = await res.json()
-  if (data.code && data.code === 401) {
-    localStorage.clear()
-    authStatus.value = true
+  vh.showLoading()
+  try {
+    const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ type: 'list', session: session.value }) })
+    const data = await res.json()
+    if (data.code && data.code === 401) {
+      localStorage.clear()
+      authStatus.value = true
+    }
+    if (!data.success) return toast({ description: data.message, variant: 'destructive' });
+    siteList.value = data.data;
+    siteValue.value = siteList.value[0]
+    if (siteValue.value) getDatas()
+  } catch (error) {
+    console.log(error);
+  } finally {
+    vh.hideLoading()
   }
-  if (!data.success) return toast({ description: data.message, variant: 'destructive' });
-  siteList.value = data.data;
-  siteValue.value = siteList.value[0]
-  if (siteValue.value) getDatas()
 }
 
-// 站点切换事件
-const siteChangeFn = () => getDatas()
-
 // 获取数据
-const resData = ref<any>({})
+const resData = ref<any>({ visit: {} })
+const tempResData = ref<any>({ visit: {} })
 const getDatasStatus = ref<boolean>(false)
 const getDatas = async () => {
   // 清空数据
-  resData.value = {}
+  resData.value = { visit: {} }
+  tempResData.value = { visit: {} }
   // 获取数据
+  const pmsARR = ['visit', 'path', 'referrer', 'os', 'soft', 'area', 'echarts'];
   getDatasStatus.value = true
-  const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ siteID: siteValue.value, time: timeValue.value, session: session.value }), })
-  const data = await res.json()
-  if (data.code && data.code === 401) {
-    localStorage.clear()
-    authStatus.value = true
-  }
-  if (!data.success) return toast({ description: data.message, variant: 'destructive' });
-  getDatasStatus.value = false
-  resData.value = data.data
-  renderEcharts(resData.value.echarts_data.map((i: any) => `${i.name}${['today', '1d'].includes(timeValue.value) ? '点' : '日'}`), resData.value.echarts_data.map((i: any) => `${i.value}`))
+  vh.showLoading()
+  const promisesForEach: Array<Promise<any>> = [];
+  pmsARR.forEach((i: any) => {
+    const p = new Promise((r) => {
+      (async () => {
+        try {
+          const pms = { type: i, siteID: siteValue.value, time: timeValue.value, session: session.value }
+          const res = await fetch('/api', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify(pms) })
+          const data = await res.json()
+          if (data.code && data.code === 401) {
+            localStorage.clear()
+            authStatus.value = true;
+          }
+          if (!data.success) return toast({ description: data.message, variant: 'destructive' });
+          tempResData.value[i] = i == 'echarts' ? renderEcharts(data.data.map((i: any) => `${i.name}${['today', '1d'].includes(timeValue.value) ? '点' : '日'}`), data.data.map((i: any) => `${i.value}`)) : data.data
+        } catch (error) {
+          console.log(error);
+        } finally {
+          // Promise执行完毕触发
+          r(true);
+        }
+      })();
+    });
+    promisesForEach.push(p);
+  })
+  await Promise.all(promisesForEach);
+  getDatasStatus.value = false;
+  vh.hideLoading()
+  // 渲染数据
+  resData.value = { ...tempResData.value }
 }
 
 // 获取ICON

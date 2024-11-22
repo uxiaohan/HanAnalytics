@@ -24,6 +24,7 @@ export const formatTime = (timeStr, tz) => {
     case "1d":
     case "7d":
     case "30d":
+    case "60d":
     case "90d":
       sqlTime = `toDateTime('${startDay}') AND timestamp < toDateTime('${endDay}')`;
       break;
@@ -38,7 +39,7 @@ export const countData = (arr, key, keyType, status = true) => {
   // 处理JS中对象无序排列问题
   const _StringKey = status ? "" : `-_-www.vvhan.com-_-`;
   let res = arr.reduce((_arr, v) => {
-    _arr[`${v[key]}${_StringKey}`] ? (_arr[`${v[key]}${_StringKey}`] += 1) : (_arr[`${v[key]}${_StringKey}`] = 1);
+    _arr[`${v[key]}${_StringKey}`] ? (_arr[`${v[key]}${_StringKey}`] += Number(v["count"]) || 1) : (_arr[`${v[key]}${_StringKey}`] = Number(v["count"]) || 1);
     return _arr;
   }, {});
 
@@ -59,6 +60,7 @@ export const countData = (arr, key, keyType, status = true) => {
 
     case "7d":
     case "30d":
+    case "60d":
     case "90d":
       Array.from({ length: Number(String(keyType.key).replace("d", "")) }).forEach((i, idx) => {
         timeArr[
@@ -86,27 +88,29 @@ export const echartsData = (data, key, tz) => {
   // key=1 Last24小时 - 24小时
   // key=7 过去7天
   // key=30 过去30天
+  // key=60 过去60天
   // key=90 过去90天
   let timeArr = [];
   switch (key) {
     case "today":
     case "1d":
       timeArr = data.map((i) => {
-        i.t_str = dayjs.utc(i.timestamp).tz(tz).format("HH");
+        i.t_str = dayjs.utc(i.hour).tz(tz).format("HH");
         return i;
       });
       break;
     case "7d":
     case "30d":
+    case "60d":
     case "90d":
       timeArr = data.map((i) => {
-        i.t_str = dayjs.utc(i.timestamp).tz(tz).format("MM.DD");
+        i.t_str = dayjs.utc(i.hour).tz(tz).format("MM.DD");
         return i;
       });
       break;
     default:
       timeArr = data.map((i) => {
-        i.t_str = dayjs.utc(i.timestamp).tz(tz).format("HH");
+        i.t_str = dayjs.utc(i.hour).tz(tz).format("HH");
         return i;
       });
   }
