@@ -24,16 +24,16 @@
 ### 环境变量说明
 ```shell
 # Cloudflare Workers ID
-CLOUDFLARE_ACCOUNT_ID = '你的 Cloudflare Workers ID'
+CLOUDFLARE_ACCOUNT_ID = 你的 Cloudflare Workers ID
 
 # 你的 Cloudflare API token
-CLOUDFLARE_API_TOKEN = '你的 Cloudflare API token'
+CLOUDFLARE_API_TOKEN = 你的 Cloudflare API token
 
 # 网站访问密码 (不设置即无需密码访问)
-CLOUDFLARE_WEBSITE_PWD = ''
+CLOUDFLARE_WEBSITE_PWD = 
 
-# 可统计的白名单 格式：  域名,WebSite|域名,WebSite，多个站点使用|分隔 例如：'api.vvhan.com,Hello-Han-Api|www.vvhan.com,Hello-HanHexoBlog'  (不设置即允许任何统计)
-CLOUDFLARE_WEBSITE_WHITELIST = ''
+# 可统计的白名单 格式：  域名,WebSite|域名,WebSite，多个站点使用|分隔 例如：api.vvhan.com,Hello-Han-Api|www.vvhan.com,Hello-HanHexoBlog  (不设置即允许任何统计)
+CLOUDFLARE_WEBSITE_WHITELIST = 
 ```
 
 ### 绑定
