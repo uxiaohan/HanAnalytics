@@ -30,8 +30,8 @@ export async function onRequest({ request, env }) {
           host, //Host - blob2
           path, //path - blob3
           referrerUrl, //referrer - blob4
-          os.name || "Default", //osName - blob5
-          browser.name == "Chrome WebView" ? "Chrome" : browser.name || "Default", //browserName - blob6
+          os.name || "Unknown", //osName - blob5
+          browser.name == "Chrome WebView" ? "Chrome" : browser.name || "Unknown", //browserName - blob6
           area, //areaCode - blob7
           userAgent //UA - blob8
         ],
