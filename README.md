@@ -60,4 +60,4 @@ Cloudflare Analytics Engine 使用抽样技术，以可承受的规模化方式�
 
 ### 使用说明
 
-https://www.vvhan.com/article/han-analytics.html
+https://www.vvhan.com/article/han-analytics
