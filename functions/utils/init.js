@@ -33,7 +33,7 @@ export const vh_INIT = async (env, time, siteID, tz, type = null) => {
             .map((i) => i.blob1)
             .reverse();
         } else {
-          resJSON = data.map((i) => i.blob1).reverse();
+          resJSON = data.map((i) => i.blob1).reverse().slice(0, 100);
         }
       }
       break;
@@ -55,7 +55,7 @@ export const vh_INIT = async (env, time, siteID, tz, type = null) => {
         const res = await fetch(defaultUrl, { method: "POST", body: query, headers: defaultHeaders });
         const { data } = await res.json();
         // 处理其他数据
-        resJSON = countData(data, keyARR[type], {});
+        resJSON = countData(data, keyARR[type], {}).slice(0, 100);
         // 处理Area
         if (type == "area") resJSON.forEach((i) => (i.code = AREAS[i.name]));
       }
