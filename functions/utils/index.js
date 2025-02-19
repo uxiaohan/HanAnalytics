@@ -78,8 +78,8 @@ export const countData = (arr, key, keyType, status = true) => {
   res = { ...timeArr, ...res };
   const totalCount = Object.values(res).reduce((acc, cur) => acc + cur, 0);
   return Object.entries(res)
-    .map(([name, value]) => ({ name: name.replace(_StringKey, ""), value: key == "t_str" ? value : value >= 1000 ? `${(value / 1000).toFixed(1)}K` : value, per: `${Math.ceil((value / totalCount) * 100)}%` }))
-    .sort((a, b) => (status ? b.value - a.value : Number(a.name) - Number(b.name)));
+    .map(([name, value]) => ({ name: name.replace(_StringKey, ""), value, per: `${Math.ceil((value / totalCount) * 100)}%` }))
+    .sort((a, b) => (status && b.value - a.value)).map((i => ({ ...i, value: key == "t_str" ? i.value : i.value >= 1000 ? `${(i.value / 1000).toFixed(1)}K` : i.value })));
 };
 
 // Echarts
