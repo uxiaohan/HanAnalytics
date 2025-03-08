@@ -7,7 +7,7 @@ export const vh_INIT = async (env, time, siteID, tz, type = null) => {
   const SQL_WHERE = `FROM AnalyticsDataset WHERE timestamp >= ${formatTime(time, tz)} AND blob1 = '${siteID}'`;
   let resJSON;
   switch (type) {
-    // 获取f数据
+    // 获取数据
     case "visit":
       {
         const query = `SELECT SUM(_sample_interval) AS views, SUM(IF(double1 = '1', double1, 0.0)) AS visitor, SUM(IF(double2 = '1', double2, 0.0)) AS visit ${SQL_WHERE}`;

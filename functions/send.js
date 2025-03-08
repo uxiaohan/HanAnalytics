@@ -28,7 +28,7 @@ export async function onRequest({ request, env }) {
         blobs: [
           website, //website - blob1
           host, //Host - blob2
-          path, //path - blob3
+          path || '/', //path - blob3
           referrerUrl, //referrer - blob4
           os.name == 'android' ? 'Android' : (os.name || "Unknown"), //osName - blob5
           browser.name == "Chrome WebView" ? "Chrome" : (browser.name || "Unknown"), //browserName - blob6
