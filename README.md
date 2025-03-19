@@ -14,7 +14,7 @@
 - 登录到 [Cloudflare Login](https://dash.cloudflare.com/sign-up)，没有的注册一个 [Cloudflare SignUp](https://dash.cloudflare.com/sign-up)
 - 点击 Workers 和 Pages 随便创建一个 workers 并开启 分析引擎，然后复制 workers ID 备用。[操作截图1](https://i0.wp.com/uxiaohan.github.io/v2/2024/09/1727001144.webp)，[操作截图2](https://i0.wp.com/uxiaohan.github.io/v2/2024/09/1727001550.webp)
 - 创建一个 [Cloudflare API token](https://dash.cloudflare.com/profile/api-tokens) 备用。[操作截图1](https://i0.wp.com/uxiaohan.github.io/v2/2024/09/1727001058.webp)，[操作截图2](https://i0.wp.com/uxiaohan.github.io/v2/2024/09/1727001090.webp)，[操作截图3](https://i0.wp.com/uxiaohan.github.io/v2/2024/09/1727001118.webp)
-- Fork 项目到自己的 Github 账户备用
+- Fork 此仓库 或 [使用此模板生成新仓库](https://github.com/new?template_name=HanAnalytics&template_owner=uxiaohan)
 - 登录 Cloudflare 并创建 Pages 项目 ，链接Github仓库，选择刚刚 Fork 的项目，架构选择Vue，填入环境变量（环境变量含义如下），部署即可。[操作截图1](https://i0.wp.com/uxiaohan.github.io/v2/2024/09/1727001163.webp)，[操作截图2](https://i0.wp.com/uxiaohan.github.io/v2/2024/09/1727001181.webp)，[操作截图3](https://i0.wp.com/uxiaohan.github.io/v2/2024/12/1734595834412.webp)
 - cloudflare pages 部署完成后，在项目的`设置`中配置`绑定`，添加`Analytics Engine`，变量名称填写`AnalyticsBinding`，数据集填写`AnalyticsDataset`并保存，重新部署！[操作截图1](https://i0.wp.com/uxiaohan.github.io/v2/2024/12/1734596343524.webp)。
 - 重新部署完成后，访问 `https://xxxxxx.pages.dev` 即可访问网站分析仪表板。（注意：首次部署生成的域名可能需要几分钟时间生效，请耐心等待）
